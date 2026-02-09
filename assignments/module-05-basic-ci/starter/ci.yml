@@ -1,0 +1,44 @@
+# Module 05: Basic CI Workflow
+# Complete the TODOs to create a working CI pipeline
+
+name: CI
+
+# TODO 1: Define triggers (push to main, pull requests to main)
+on:
+  ____
+
+jobs:
+  test:
+    # TODO 2: Specify runner
+    runs-on: ____
+
+    steps:
+      # TODO 3: Checkout code
+      - ____
+
+      # TODO 4: Setup Node.js 20
+      - name: Setup Node.js
+        ____
+
+      # TODO 5: Install backend dependencies
+      - name: Install backend dependencies
+        run: ____
+
+      # TODO 6: Run backend tests
+      - name: Run backend tests
+        run: ____
+
+  build:
+    # TODO 7: This job needs test to pass first
+    needs: ____
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # TODO 8: Build Docker images
+      - name: Build backend image
+        run: ____
+
+      - name: Build frontend image
+        run: ____

@@ -1,0 +1,34 @@
+# Module 04: Multi-stage Backend Dockerfile
+
+# TODO 1: Stage 1 - Dependencies
+FROM node:20-alpine AS ____
+WORKDIR /app
+COPY package*.json ./
+# TODO: Install production dependencies only
+____
+
+# TODO 2: Stage 2 - Development
+FROM node:20-alpine AS ____
+WORKDIR /app
+COPY package*.json ./
+# TODO: Install all dependencies
+____
+COPY . .
+EXPOSE 3000
+CMD ["npm", "run", "dev"]
+
+# TODO 3: Stage 3 - Production
+FROM node:20-alpine AS ____
+# TODO: Create non-root user
+____
+WORKDIR /app
+# TODO: Copy production dependencies from deps stage
+____
+# TODO: Copy source code with proper ownership
+____
+EXPOSE 3000
+# TODO: Switch to non-root user
+____
+# TODO: Add health check
+____
+CMD ["npm", "start"]

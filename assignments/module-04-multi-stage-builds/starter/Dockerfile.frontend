@@ -1,0 +1,22 @@
+# Module 04: Multi-stage Frontend Dockerfile
+
+# TODO 1: Build stage
+FROM ____ AS build
+WORKDIR /app
+COPY package*.json ./
+# TODO: Install dependencies
+____
+COPY . .
+# TODO: Build production bundle
+____
+
+# TODO 2: Production stage with nginx
+FROM ____ AS production
+# TODO: Copy nginx config
+____
+# TODO: Copy built files from build stage
+____
+EXPOSE 80
+# TODO: Add health check
+____
+CMD ["nginx", "-g", "daemon off;"]

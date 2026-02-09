@@ -1,0 +1,48 @@
+version: '3.9'
+
+services:
+  # TODO 1: Define PostgreSQL service
+  postgres:
+    image: ____
+    environment:
+      POSTGRES_USER: ____
+      POSTGRES_PASSWORD: ____
+      POSTGRES_DB: ____
+    ports:
+      - "____:____"
+    volumes:
+      - ____:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "____"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # TODO 2: Define backend service
+  backend:
+    build: ____
+    ports:
+      - "____:____"
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DB_HOST: ____
+      DB_PORT: ____
+      DB_NAME: ____
+      DB_USER: ____
+      DB_PASSWORD: ____
+    depends_on:
+      postgres:
+        condition: ____
+
+  # TODO 3: Define frontend service
+  frontend:
+    build: ____
+    ports:
+      - "____:____"
+    depends_on:
+      - ____
+
+# TODO 4: Define named volumes
+volumes:
+  ____:

@@ -1,0 +1,62 @@
+name: Module 06 - Complete Pipeline Grading
+
+on:
+  push:
+    paths:
+      - 'assignments/module-06-complete-pipeline/**'
+  pull_request:
+    paths:
+      - 'assignments/module-06-complete-pipeline/**'
+
+jobs:
+  grade-module-06:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate pipeline workflow exists
+        run: |
+          if [ -f "assignments/module-06-complete-pipeline/starter/pipeline.yml" ]; then
+            echo "Pipeline workflow found"
+          else
+            echo "pipeline.yml not found"
+            exit 1
+          fi
+
+      - name: Validate YAML syntax
+        run: |
+          python3 -c "
+          import yaml, sys
+          with open('assignments/module-06-complete-pipeline/starter/pipeline.yml') as f:
+            data = yaml.safe_load(f)
+          if 'jobs' not in data: sys.exit('Missing jobs')
+          print('YAML valid')
+          "
+
+      - name: Check pipeline stages
+        run: |
+          python3 -c "
+          import yaml, sys
+          with open('assignments/module-06-complete-pipeline/starter/pipeline.yml') as f:
+            data = yaml.safe_load(f)
+          jobs = data.get('jobs', {})
+          job_names = ' '.join(jobs.keys()).lower()
+          content = str(data).lower()
+          checks = {
+            'test/lint stage': any(w in content for w in ['test', 'lint', 'check']),
+            'build stage': 'build' in content,
+            'docker stage': 'docker' in content,
+          }
+          for check, passed in checks.items():
+            status = 'Present' if passed else 'Missing'
+            print(f'{check}: {status}')
+          if not all(checks.values()):
+            print('Warning: Some pipeline stages may be missing')
+          print('Pipeline structure validated')
+          "
+
+      - name: Summary
+        if: success()
+        run: |
+          echo "Module 06 Grading: PASSED - 20/20 points"

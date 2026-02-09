@@ -1,0 +1,60 @@
+name: Module 04 - Multi-stage Builds Grading
+
+on:
+  push:
+    paths:
+      - 'assignments/module-04-multi-stage-builds/**'
+  pull_request:
+    paths:
+      - 'assignments/module-04-multi-stage-builds/**'
+
+jobs:
+  grade-module-04:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build backend multi-stage
+        run: |
+          if [ -f "assignments/module-04-multi-stage-builds/starter/Dockerfile.backend" ]; then
+            docker build -f assignments/module-04-multi-stage-builds/starter/Dockerfile.backend \
+              -t backend-multistage --target production ./backend
+            echo "Backend multi-stage build succeeded"
+          else
+            echo "Dockerfile.backend not found"
+            exit 1
+          fi
+
+      - name: Build frontend multi-stage
+        run: |
+          if [ -f "assignments/module-04-multi-stage-builds/starter/Dockerfile.frontend" ]; then
+            docker build -f assignments/module-04-multi-stage-builds/starter/Dockerfile.frontend \
+              -t frontend-multistage --target production ./frontend
+            echo "Frontend multi-stage build succeeded"
+          else
+            echo "Dockerfile.frontend not found"
+            exit 1
+          fi
+
+      - name: Check image sizes
+        run: |
+          BE_SIZE=$(docker image inspect backend-multistage --format='{{.Size}}')
+          FE_SIZE=$(docker image inspect frontend-multistage --format='{{.Size}}')
+          BE_MB=$((BE_SIZE / 1024 / 1024))
+          FE_MB=$((FE_SIZE / 1024 / 1024))
+          echo "Backend: ${BE_MB}MB | Frontend: ${FE_MB}MB"
+          [ $BE_MB -lt 300 ] || { echo "Backend image too large"; exit 1; }
+          [ $FE_MB -lt 200 ] || { echo "Frontend image too large"; exit 1; }
+
+      - name: Check non-root user
+        run: |
+          docker run --rm backend-multistage whoami | grep -v root || echo "Warning: running as root"
+
+      - name: Summary
+        if: success()
+        run: |
+          echo "Module 04 Grading: PASSED - 15/15 points"

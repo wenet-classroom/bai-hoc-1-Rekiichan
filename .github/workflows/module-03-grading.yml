@@ -1,0 +1,64 @@
+name: Module 03 - Docker Compose Grading
+
+on:
+  push:
+    paths:
+      - 'assignments/module-03-docker-compose/**'
+      - 'docker-compose.yml'
+  pull_request:
+    paths:
+      - 'assignments/module-03-docker-compose/**'
+
+jobs:
+  grade-module-03:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate docker-compose.yml
+        run: |
+          docker compose config > /dev/null
+          echo "docker-compose.yml syntax valid"
+
+      - name: Check required services
+        run: |
+          SERVICES=$(docker compose config --services)
+          echo "$SERVICES" | grep -q "postgres" || { echo "Missing postgres service"; exit 1; }
+          echo "$SERVICES" | grep -q "backend" || { echo "Missing backend service"; exit 1; }
+          echo "$SERVICES" | grep -q "frontend" || { echo "Missing frontend service"; exit 1; }
+          echo "All required services defined"
+
+      - name: Start services
+        run: |
+          docker compose up -d
+          sleep 30
+
+      - name: Test backend health
+        run: |
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/health)
+          [ "$HTTP_CODE" -eq 200 ] || { echo "Backend health failed ($HTTP_CODE)"; docker compose logs backend; exit 1; }
+          echo "Backend health check passed"
+
+      - name: Test frontend
+        run: |
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/)
+          [ "$HTTP_CODE" -eq 200 ] || { echo "Frontend failed ($HTTP_CODE)"; exit 1; }
+          echo "Frontend accessible"
+
+      - name: Test service communication
+        run: |
+          RESPONSE=$(curl -s -X POST http://localhost:3000/api/todos \
+            -H "Content-Type: application/json" \
+            -d '{"title":"Test Todo"}')
+          echo "$RESPONSE" | grep -q "success" || { echo "Communication failed"; exit 1; }
+          echo "Services communicate correctly"
+
+      - name: Cleanup
+        if: always()
+        run: docker compose down -v
+
+      - name: Summary
+        if: success()
+        run: |
+          echo "Module 03 Grading: PASSED - 15/15 points"

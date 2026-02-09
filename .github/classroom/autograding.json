@@ -1,0 +1,74 @@
+{
+  "tests": [
+    {
+      "name": "Module 01: Backend Dockerfile",
+      "setup": "",
+      "run": "bash assignments/module-01-dockerize-backend/tests/test.sh",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 10
+    },
+    {
+      "name": "Module 02: Frontend Dockerfile",
+      "setup": "",
+      "run": "bash assignments/module-02-dockerize-frontend/tests/test.sh",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 10
+    },
+    {
+      "name": "Module 03: Docker Compose",
+      "setup": "",
+      "run": "bash assignments/module-03-docker-compose/tests/test.sh",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 15,
+      "points": 15
+    },
+    {
+      "name": "Module 04: Multi-stage Builds",
+      "setup": "",
+      "run": "bash assignments/module-04-multi-stage-builds/tests/test.sh",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 15,
+      "points": 15
+    },
+    {
+      "name": "Module 05: Basic CI",
+      "setup": "",
+      "run": "bash assignments/module-05-basic-ci/tests/test.sh",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 15
+    },
+    {
+      "name": "Module 06: Complete Pipeline",
+      "setup": "",
+      "run": "bash assignments/module-06-complete-pipeline/tests/test.sh",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 20,
+      "points": 20
+    },
+    {
+      "name": "Module 07: VM Deployment",
+      "setup": "",
+      "run": "bash assignments/module-07-vm-deployment/tests/test.sh",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 30,
+      "points": 15
+    }
+  ]
+}

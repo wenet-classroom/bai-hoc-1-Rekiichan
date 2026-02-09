@@ -1,0 +1,41 @@
+# Module 06: Complete CI/CD Pipeline
+# Complete the TODOs to build a full pipeline
+
+name: CI/CD Pipeline
+
+# TODO 1: Trigger on push and pull request to main
+on:
+  ____
+
+jobs:
+  # TODO 2: Test job
+  test:
+    runs-on: ____
+    steps:
+      - uses: actions/checkout@v4
+      # TODO: Setup Node.js, install deps, run tests
+      ____
+
+  # TODO 3: Build job (depends on test)
+  build:
+    needs: ____
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # TODO: Build Docker images with git SHA tag
+      - name: Build backend
+        run: ____
+      - name: Build frontend
+        run: ____
+
+  # TODO 4: Deploy job (depends on build, only on main)
+  deploy:
+    needs: ____
+    runs-on: ubuntu-latest
+    # TODO: Only run on main branch
+    if: ____
+    steps:
+      - uses: actions/checkout@v4
+      # TODO: Deploy steps
+      - name: Deploy
+        run: ____

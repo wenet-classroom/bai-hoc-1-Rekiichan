@@ -1,0 +1,32 @@
+version: '3.9'
+
+# TODO: Override services for production
+services:
+  postgres:
+    environment:
+      # TODO 1: Use environment variable for password
+      POSTGRES_PASSWORD: ____
+
+  backend:
+    build:
+      # TODO 2: Target production stage
+      target: ____
+    environment:
+      # TODO 3: Set production environment
+      NODE_ENV: ____
+    # TODO 4: Remove development volumes
+    volumes: ____
+    # TODO 5: Add resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: ____
+          memory: ____
+
+  frontend:
+    # TODO 6: Add resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: ____
+          memory: ____

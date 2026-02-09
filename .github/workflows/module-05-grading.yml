@@ -1,0 +1,62 @@
+name: Module 05 - Basic CI Grading
+
+on:
+  push:
+    paths:
+      - 'assignments/module-05-basic-ci/**'
+  pull_request:
+    paths:
+      - 'assignments/module-05-basic-ci/**'
+
+jobs:
+  grade-module-05:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate CI workflow exists
+        run: |
+          if [ -f "assignments/module-05-basic-ci/starter/ci.yml" ]; then
+            echo "CI workflow file found"
+          else
+            echo "ci.yml not found"
+            exit 1
+          fi
+
+      - name: Validate YAML syntax
+        run: |
+          python3 -c "
+          import yaml, sys
+          try:
+            with open('assignments/module-05-basic-ci/starter/ci.yml') as f:
+              data = yaml.safe_load(f)
+            if 'on' not in data: sys.exit('Missing trigger definition')
+            if 'jobs' not in data: sys.exit('Missing jobs definition')
+            print('YAML syntax valid')
+          except Exception as e:
+            print(f'YAML error: {e}')
+            sys.exit(1)
+          "
+
+      - name: Check required components
+        run: |
+          python3 -c "
+          import yaml, sys
+          with open('assignments/module-05-basic-ci/starter/ci.yml') as f:
+            data = yaml.safe_load(f)
+          jobs = data.get('jobs', {})
+          if not jobs:
+            sys.exit('No jobs defined')
+          for name, job in jobs.items():
+            steps = job.get('steps', [])
+            step_names = ' '.join([str(s.get('name','')) + str(s.get('run','')) for s in steps])
+            if 'checkout' not in step_names.lower() and 'actions/checkout' not in str(steps):
+              print(f'Warning: Job {name} may be missing checkout step')
+          print('Required components present')
+          "
+
+      - name: Summary
+        if: success()
+        run: |
+          echo "Module 05 Grading: PASSED - 15/15 points"

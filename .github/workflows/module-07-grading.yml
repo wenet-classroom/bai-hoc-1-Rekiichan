@@ -1,0 +1,52 @@
+name: Module 07 - VM Deployment Grading
+
+on:
+  push:
+    paths:
+      - 'assignments/module-07-vm-deployment/**'
+  pull_request:
+    paths:
+      - 'assignments/module-07-vm-deployment/**'
+
+jobs:
+  grade-module-07:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate deployment script exists
+        run: |
+          if [ -f "assignments/module-07-vm-deployment/starter/deploy.sh" ]; then
+            echo "Deploy script found"
+          else
+            echo "deploy.sh not found"
+            exit 1
+          fi
+
+      - name: Check deploy script content
+        run: |
+          SCRIPT="assignments/module-07-vm-deployment/starter/deploy.sh"
+          grep -q "docker" "$SCRIPT" || { echo "Missing docker commands"; exit 1; }
+          grep -q "compose" "$SCRIPT" || echo "Warning: No docker-compose reference"
+          echo "Deploy script validated"
+
+      - name: Validate production compose
+        run: |
+          if [ -f "assignments/module-07-vm-deployment/starter/docker-compose.prod.yml" ]; then
+            echo "Production compose found"
+          else
+            echo "docker-compose.prod.yml not found"
+            exit 1
+          fi
+
+      - name: Check production config
+        run: |
+          COMPOSE="assignments/module-07-vm-deployment/starter/docker-compose.prod.yml"
+          grep -q "production" "$COMPOSE" || grep -q "prod" "$COMPOSE" || echo "Warning: No production indicators"
+          echo "Production config validated"
+
+      - name: Summary
+        if: success()
+        run: |
+          echo "Module 07 Grading: PASSED - 15/15 points"

@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+  postgres:
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me_in_production}
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+
+  backend:
+    build:
+      target: production
+    environment:
+      NODE_ENV: production
+      DB_PASSWORD: ${DB_PASSWORD:-change_me_in_production}
+    volumes: []
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+
+  frontend:
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 128M
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
